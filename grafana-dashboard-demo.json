@@ -26,7 +26,7 @@
       "datasource": "tf-oracle-metrics",
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 24,
         "x": 0,
         "y": 0
@@ -165,10 +165,10 @@
       "description": "Number of sessions active or waiting",
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 6
       },
       "id": 4,
       "legend": {
@@ -294,10 +294,10 @@
       "description": "Sessions blocked by other sessions",
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 6
       },
       "id": 8,
       "legend": {
@@ -418,10 +418,10 @@
       "datasource": "tf-oracle-metrics",
       "fill": 1,
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 11
       },
       "id": 6,
       "legend": {
@@ -537,6 +537,100 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "columns": [],
+      "datasource": "tf-oracle-metrics",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 10,
+      "links": [],
+      "options": {},
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "oracle_ash",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT  \"sql_id\",\"blocking_session\", \"session_id\",\"sql_opname\",\"event\",\"program\" FROM \"oracle_ash\" WHERE (\"db\" = 'otsg') AND $timeFilter and blocking_session  <> 0",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "db",
+              "operator": "=",
+              "value": "otsg"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "ASH Who blocks who",
+      "transform": "table",
+      "type": "table"
     }
   ],
   "schemaVersion": 18,
@@ -577,5 +671,5 @@
   "timezone": "",
   "title": "Oracle ASH Demo",
   "uid": "PtfWly1Zk",
-  "version": 2
+  "version": 3
 }
