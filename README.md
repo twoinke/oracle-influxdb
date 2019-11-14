@@ -66,3 +66,7 @@ Ein Klick auf "Add Query", und wir können mit dem Query Editor eine Abfrage ers
 
 Aus der Oracle Active Session History können auf diese Weise eine Reihe von Performancedaten visualisiert werden. Sammelt man nun noch weitere Metriken der laufenden Applikation und Systeme ebenfalls in InfluxDB, lassen sich diese mit den Daten aus der ASH korrelieren. Das Identifizieren von Performanceproblemen wird damit zum Klacks.
 
+Das Demo-Dashboard zeigt die Wait-Events, sowie den Session-Status, sowie die Anzahl blockierender Sessions und welche Sessions durch welche anderen Sessions und durch welches Wait-Event blockiert werden.
+
+
+![Grafana Demo Dashboard](img/grafana_demo_dashboard.png)
