@@ -17,20 +17,22 @@ InfluxDB und Elasticsearch verfolgen verschiedene Ziele. Während Elasticsearch 
 Anders als eine RDBMS "denkt" InfluxDB nicht in Tabellen, Keys und Indizes, sondern in "Points", die durch Tags identifiziert werden, Felder enthalten und in sogenannten Measurements abgelegt werden. InfluxDB ist zudem schemalos.
 
 Zunächst müssen wir uns InfluxDB und Grafana installieren. Der Einfachheit halber verwenden wir Docker und die offiziellen Docker-Images:
-
-# docker run -d -p 127.0.0.1:8086:8086 -d --name influxdb influxdb:1.7.9
-# docker run -d -p 3000:3000 --link influxdb --name grafana grafana/grafana:6.4.4
-
+```bash
+docker run -d -p 127.0.0.1:8086:8086 -d --name influxdb influxdb:1.7.9
+docker run -d -p 3000:3000 --link influxdb --name grafana grafana/grafana:6.4.4
+```
 Wie bekommen wir nun die Daten aus der ASH in die InfluxDB? Der Datensammler im TICK-Stack nennt sich Telegraf, und bietet von Haus aus eine Reihe von Plugins zum Sammeln der verschiedensten Metriken einschließlich Performancedaten einiger Datenbanken wie MySQL, Postgres oder SQL Server, jedoch nicht Oracle. Auch einfach nur Queries gegen Oracle absetzen ist nicht möglich. Es gibt aber das "exec"-Plugin, mit dem sich beliebige Programme oder Skripte ausführen lassen, deren Ausgabe dann InfluxDB zugeführt wird. Diesen Weg wollen wir gehen. Zum Aufbereiten der Daten verwenden wir ein kleines Python-Script.
 
 
 
-<script bauen>
+```python
+import script_here
+```
 
 
 Jetzt brauchen wir noch einen Oracle-User, mit dem das Script auf die Active Session History zugreifen kann.
 Oracle User anlegen:
-
+```
 SQL> create user metrics identified by metrics;
 
 User created.
@@ -40,25 +42,26 @@ SQL> grant connect to metrics;
 Grant succeeded.
 
 SQL> grant select on v_$active_session_history to metrics;
+```
 
-
-
+```bash
 apt-get install telegraf
 vi telegraf.conf
 service telegraf start
-
+```
 
 Jetzt, da InfluxDB aus der Active Session History befüllt wird, können wir mit dem Visualisierungsteil weitermachen.
 Grafana ist auf http://localhost:3000 erreichbar und möchte nach Login mit admin/admin zunächst ein neues Passwort gesetzt haben.
 
 Als nächstes benötigen wir eine Datenquelle.
 
-<bild Datenquelle erstellen>
+![Grafana Datenquelle erstellen](img/grafana_add_data_source_1.png)
+![Grafana Datenquelle erstellen](img/grafana_add_data_source_2.png)
 
 Und jetzt endlich erstellen wir unseren ersten Graphen. Grafana hält bereits ein frisches Dashboard und ein neues, unkonfiguriertes Panel für uns bereit.
 Ein Klick auf "Add Query", und wir können mit dem Query Editor eine Abfrage erstellen, wie z. B. für die Wait Events, siehe Screenshot.
 
-<bild query erstellen>
+![Grafana Query erstellen](img/grafana_graph_wait_events.PNG)
 
 
 Aus der Oracle Active Session History können auf diese Weise eine Reihe von Performancedaten visualisiert werden. Sammelt man nun noch weitere Metriken der laufenden Applikation und Systeme ebenfalls in InfluxDB, lassen sich diese mit den Daten aus der ASH korrelieren. Das Identifizieren von Performanceproblemen wird damit zum Klacks.
