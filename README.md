@@ -18,7 +18,7 @@ Anders als eine RDBMS "denkt" InfluxDB nicht in Tabellen, Keys und Indizes, sond
 
 Zunächst müssen wir uns InfluxDB und Grafana installieren. Der Einfachheit halber verwenden wir Docker und die offiziellen Docker-Images:
 ```bash
-docker run -d -p 127.0.0.1:8086:8086 -d --name influxdb influxdb:1.7.9
+docker run -d -p 127.0.0.1:8086:8086  --name influxdb influxdb:1.7.9
 docker run -d -p 3000:3000 --link influxdb --name grafana grafana/grafana:6.4.4
 ```
 Wie bekommen wir nun die Daten aus der ASH in die InfluxDB? Der Datensammler im TICK-Stack nennt sich Telegraf, und bietet von Haus aus eine Reihe von Plugins zum Sammeln der verschiedensten Metriken einschließlich Performancedaten einiger Datenbanken wie MySQL, Postgres oder SQL Server, jedoch nicht Oracle. Auch einfach nur Queries gegen Oracle absetzen ist nicht möglich. Es gibt aber das "exec"-Plugin, mit dem sich beliebige Programme oder Skripte ausführen lassen, deren Ausgabe dann InfluxDB zugeführt wird. Diesen Weg wollen wir gehen. Zum Aufbereiten der Daten verwenden wir ein kleines Python-Script.
