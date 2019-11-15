@@ -1,5 +1,4 @@
 # oracle-influxdb
-Example configuration/script/dashboard to visualize Oracle Active Session History data with InfluxDB and Grafana
 
 Oracle Performance Daten visualisieren mit InfluxDB und Grafana
 
@@ -9,7 +8,7 @@ Oracle's Active Session History (ASH) ist unerlässlich, um die Performance der 
 Dementsprechend müssen die Daten also anderweitig persistiert werden. Einen Ansatz können moderne Monitoring- bzw. Visualisierungs-Lösungen wie der ELK-Stack (Elasticsearch, Logstash, Kibana) und der TICK-Stack (Telegraf, InfluxDB, Chronograf, Kapacitor) bieten.
 Einen Weg, wie man den ELK-Stack hierzu nutzen kann, zeigt Robin Moffatt unter https://www.elastic.co/de/blog/visualising-oracle-performance-data-with-the-elastic-stack
 
-In diesem Beitrag wollen wir den TICK-Stack nutzen, von dem uns zunächst nur dessen Storage-Kompenente InfluxDB interessiert.
+In dieses Tutorial soll die Verwendung des TICK-Stack erklären, von dem uns zunächst nur dessen Storage-Kompenente InfluxDB interessiert.
 
 Vorab noch die obligatorische Anmerkung, dass die Active Session History Teil des "Oracle Diagnostics Pack" ist und damit entsprechend lizenzpflichtig. Es gibt aber auch die Möglichkeit, ohne die ASH ans Ziel zu kommen, dazu später mehr.
 
@@ -33,6 +32,8 @@ import script_here
 Jetzt brauchen wir noch einen Oracle-User, mit dem das Script auf die Active Session History zugreifen kann.
 Oracle User anlegen:
 ```
+sqlplus connect / as sysdba
+
 SQL> create user metrics identified by metrics;
 
 User created.
@@ -44,10 +45,9 @@ Grant succeeded.
 SQL> grant select on v_$active_session_history to metrics;
 ```
 
+
 ```bash
-apt-get install telegraf
-vi telegraf.conf
-service telegraf start
+telegraf --config telegraf.conf
 ```
 
 Jetzt, da InfluxDB aus der Active Session History befüllt wird, können wir mit dem Visualisierungsteil weitermachen.
@@ -64,9 +64,10 @@ Ein Klick auf "Add Query", und wir können mit dem Query Editor eine Abfrage ers
 ![Grafana Query erstellen](img/grafana_graph_wait_events.PNG)
 
 
+Die Oracle Active Session History enthält natürlich noch viel mehr nützliche Informationen, von denen im Rahmen dieses Tutorials nur ein paar behandelt werden können, um den Rahmen nicht zu sprengen.
 Aus der Oracle Active Session History können auf diese Weise eine Reihe von Performancedaten visualisiert werden. Sammelt man nun noch weitere Metriken der laufenden Applikation und Systeme ebenfalls in InfluxDB, lassen sich diese mit den Daten aus der ASH korrelieren. Das Identifizieren von Performanceproblemen wird damit zum Klacks.
 
-Das Demo-Dashboard zeigt die Wait-Events, sowie den Session-Status, sowie die Anzahl blockierender Sessions und welche Sessions durch welche anderen Sessions und durch welches Wait-Event blockiert werden.
+Das Demo-Dashboard zeigt die Wait-Events, den Session-Status(wartend/laufend), sowie die Anzahl blockierender Sessions und welche Sessions durch welche anderen Sessions und durch welches Wait-Event blockiert werden.
 
 
 ![Grafana Demo Dashboard](img/grafana_demo_dashboard.png)
