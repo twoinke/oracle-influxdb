@@ -1,6 +1,81 @@
 # oracle-influxdb
 
-Oracle Performance Daten visualisieren mit InfluxDB und Grafana
+Visualizing Oracle performance daten with InfluxDB und Grafana
+
+
+With Active Session History (ASH), Oracle provides an invaluable feature to historically analyze performance. Implemented as a ring buffer, data retention is limited.
+But often, one needs to be able to analyze the database load retrospectively for a longer period of time.
+Archiving the ASH data into some other storage comes to mind. Modern monitoring/visualization solutions like the ELK stack (Elasticsearch, Logstash, Kibana) or the TICK-Stack (Telegraf, InfluxDB, Chronograf, Kapacitor) come to mind. One solution using the ELK stack is described by Robin Moffat at https://www.elastic.co/de/blog/visualising-oracle-performance-data-with-the-elastic-stack.
+
+This tutorial will show how to use the TICK stack, or more precisely its storage component InfluxDB. Covering all aspects of InfluxDB is way outside the scope of this article, we will cover just what we need as we go. If you are totally new to InfluxDB or want to dig deeper, please refer to the very good online documentation https://docs.influxdata.com/influxdb/v1.7/
+
+Before we dig into it I just want to point out that the ASH is part of the "Oracle Diagnostics Pack" and needs to be licensed properly. 
+
+
+
+Let us begin by going ahead and installing influxdb and grafana. To keep things simple, we just use the official docker images and use the following commands to spin up  our test environment.
+```bash
+docker run -d -p 127.0.0.1:8086:8086  --name influxdb influxdb:1.7.9
+docker run -d -p 3000:3000 --link influxdb --name grafana grafana/grafana:6.4.4
+```
+
+But how do we get our ASH data into InfluxDB now? Time to look at the "T" in "TICK" stack, telegraf,  which corresponds to the "L" in ELK-Stack (logstash).
+Telegraf is the TICK stack's data collector and supports a variety of output-plugins (one of them InfluxDB), and also lots and lots of input-plugins. Among them a couple of plugins to collect performance data from various databases except Oracle. Even a simple query against Oracle is not possible. Looks like we need to roll our own.
+Luckily, Telegraf has a plugin called "exec" which executes arbitrary commands and captures the output, which can then be fed into InfluxDB.
+InfluxDB is a so called "time series database". So every entry is called a "point" (in time), identified by timestamp, measurement name (like "cpu_load") and "tags".
+
+An "INSERT" into InfluxDB starts with the measurement name, followed by tags, fields an the timestamp. Simple example:
+load,host=localhost avg5min=3.4,avg10min=3,0,avg15min=2.9 1574074358000000
+
+It's important to understand what the tags are used for. Together with the timestamp and the measurement name, the tags are used to uniqely identify the point. Much like a primary key. Also, tags are indexed in InflixDB, while fields are not. So, we must include everything we might need as search predicate or within a group by clause as tags. Using a field as search predicate is still possible, but slow.
+With that being said, we use a small python script to query the ASH and transform the data into a format suitable for InfluxDB.
+
+```python
+import script_here
+```
+
+
+Next thing we need is an Oracle-User, which the script will use to access ASH:
+```
+sqlplus connect / as sysdba
+
+SQL> create user metrics identified by metrics;
+
+User created.
+
+SQL> grant connect to metrics;
+
+Grant succeeded.
+
+SQL> grant select on v_$active_session_history to metrics;
+```
+
+Now we need to edit the provided telegraf.conf to point to our script, and then execute telegraf
+
+```bash
+telegraf --config telegraf.conf --debug
+```
+The --debug switch enables more verbose logging, so we will see right away if anything is wrong.
+
+
+If everything went ok, InfluxDB is now being fed with ASH data. Next thing we need is to set up a data source in Grafana, like shown.
+
+![Grafana Datenquelle erstellen](img/grafana_add_data_source_1.png)
+![Grafana Datenquelle erstellen](img/grafana_add_data_source_2.png)
+
+Finally, we are ready to create our first Graph. Grafana alreads has a fresh dashboard with a new, unconfigured panel. Click on "add Query", and we can enter our query using the query editor, like shown in the screenshot.
+
+![Grafana Query erstellen](img/grafana_graph_wait_events.PNG)
+
+
+
+The demo dashboard shows wait events, session status(waiting/running), number of blocking sessions and sessions blocked by other sessions and by which wait event.
+
+![Grafana Demo Dashboard](img/grafana_demo_dashboard.png)
+
+
+
+
 
 
 Oracle's Active Session History (ASH) ist unerlässlich, um die Performance der Datenbank auch historisch auswerten zu können. Allerdings ist die ASH als Ringpuffer ausgeführt, und damit die Vorhaltezeit der historischen Performancedaten begrenzt. Oft ist es aber gerade wichtig, das Verhalten der Datenbank rückwirkend für einen längeren Zeitraum unter die Lupe zu nehmen.
