@@ -99,7 +99,7 @@ The demo dashboard shows wait events, session status(waiting/running), number of
 
 
 ## Conclusion
-Collecting Oracle performance data in InfluxDB makes it easy to visualize what happens on your database, even for historical data. Having you application also feed performance data into InfluxDB even makes you able to correlate them to Oracle's and troubleshoot performance with only a few clicks. 
+Collecting Oracle performance data in InfluxDB makes it easy to visualize what happens on your database, even for historical data. Having you application also feed performance data into InfluxDB even makes you able to correlate them to Oracle's and troubleshoot performance with only a few clicks.
 
 
 
