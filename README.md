@@ -81,6 +81,7 @@ oracle_ash
 ```
 
 ## Grafana
+Now with the data part done, we will take care of the visualization part. Grafana is available at http://localhost:3000/ and after logging on using the default credentials admin/admin, we need to supply a new password. Now we are ready to go.
 
 Next thing we need is to set up a data source in Grafana, like shown.
 
