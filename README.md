@@ -1,12 +1,11 @@
 
-# Visualizing Oracle performance data with InfluxDB und Grafana #
-
+# Visualizing Oracle performance data with InfluxDB und Grafana
 
 With Active Session History (ASH), Oracle provides an invaluable feature to historically analyze performance. Implemented as a ring buffer, data retention is limited.
 But often, one needs to be able to analyze the database load retrospectively for a longer period of time.
-Archiving the ASH data into some other storage comes to mind. Modern monitoring/visualization solutions like the ELK stack (Elasticsearch, Logstash, Kibana) or the TICK-Stack (Telegraf, InfluxDB, Chronograf, Kapacitor) come to mind. One solution using the ELK stack is described by Robin Moffat at https://www.elastic.co/de/blog/visualising-oracle-performance-data-with-the-elastic-stack.
+Modern monitoring/visualization solutions like the ELK stack (Elasticsearch, Logstash, Kibana) or the TICK-Stack (Telegraf, InfluxDB, Chronograf, Kapacitor) come to mind. One solution using the ELK stack is described by Robin Moffat at https://www.elastic.co/de/blog/visualising-oracle-performance-data-with-the-elastic-stack.
 
-## Introduction
+## Prerequsites
 
 This tutorial will show how to use the TICK stack, or more precisely its storage component InfluxDB. Covering all aspects of InfluxDB is way outside the scope of this article, we will cover just what we need as we go. If you are totally new to InfluxDB or want to dig deeper, please refer to the very good online documentation https://docs.influxdata.com/influxdb/v1.7/
 You should however have a rough idea of the key concepts https://docs.influxdata.com/influxdb/v1.7/concepts/key_concepts/.
@@ -18,11 +17,12 @@ Before we dig into it I just want to point out that the ASH is part of the "Orac
 
 ## Setting up the test environment
 
-Let us begin by going ahead and installing influxdb and grafana. To keep things simple, we just use the official docker images and use the following commands to spin up  our test environment.
+Let us begin by going ahead and installing influxdb and grafana. To keep things simple, we just use the official docker images and use the following commands to spin up our test environment.
 ```bash
-docker run -d -p 127.0.0.1:8086:8086  --name influxdb influxdb:1.7.9
-docker run -d -p 127.0.0.1:3000:3000 --link influxdb --name grafana grafana/grafana:6.4.4
+docker run -d -p 127.0.0.1:8086:8086 --name influxdb influxdb:1.7.9
+docker run -d -p 127.0.0.1:3000:3000 --link influxdb --name grafana grafana/grafana:6.5.1
 ```
+
 
 ## Getting the ASH data into InfluxDB
 
