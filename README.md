@@ -4,16 +4,20 @@
 With Active Session History (ASH), Oracle provides an invaluable feature to historically analyze performance. Implemented as a ring buffer, data retention is limited.
 But often, one needs to be able to analyze the database load retrospectively for a longer period of time.
 Modern monitoring/visualization solutions like the ELK stack (Elasticsearch, Logstash, Kibana) or the TICK-Stack (Telegraf, InfluxDB, Chronograf, Kapacitor) come to mind. One solution using the ELK stack is described by Robin Moffat at https://www.elastic.co/de/blog/visualising-oracle-performance-data-with-the-elastic-stack.
+This tutorial will show how to use the TICK stack, or more precisely its storage component InfluxDB and its data collector Telegraf in conjunction with Grafana, a combination which has recently become popular as the TIG-Stack.
+
 
 ## Prerequsites
 
-This tutorial will show how to use the TICK stack, or more precisely its storage component InfluxDB. Covering all aspects of InfluxDB is way outside the scope of this article, we will cover just what we need as we go. If you are totally new to InfluxDB or want to dig deeper, please refer to the very good online documentation https://docs.influxdata.com/influxdb/v1.7/
+ Covering all aspects of InfluxDB is way outside the scope of this article, we will cover just what we need as we go. If you are totally new to InfluxDB or want to dig deeper, please refer to the very good online documentation https://docs.influxdata.com/influxdb/v1.7/
 You should however have a rough idea of the key concepts https://docs.influxdata.com/influxdb/v1.7/concepts/key_concepts/.
 If you have an SQL database background, the crosswalk https://docs.influxdata.com/influxdb/v1.7/concepts/crosswalk/ might be helpful, too
 
 Also, this tutorial will make use of Docker in order to setup the test/demo environment, so make sure you have Docker installed and you have sufficient permissions to create containers.
 
-Before we dig into it I just want to point out that the ASH is part of the "Oracle Diagnostics Pack" and needs to be licensed properly.
+## Disclaimer
+
+The Oracle Active Session History is licensed as part of the "Oracle Diagnostics Pack". Make sure your Oracle license allows usage of this feature.
 
 ## Setting up the test environment
 
