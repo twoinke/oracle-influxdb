@@ -47,81 +47,34 @@ if __name__ == "__main__":
     blocking_session_serial#
     from v$active_session_history
     where sample_time > current_timestamp - interval '%d' second
-    """ % 10)
+    """ % 60)
+
+    tags = {}
+    tags['host'] = oracle_host
+    tags['db']   = oracle_service
 
     cursor.rowfactory = make_dict_factory(cursor)
     for row in cursor:
 
+        tags['session_state'] = row['SESSION_STATE'].replace(' ', '_')
         if (row['WAIT_CLASS']):
-            print ("""oracle_ash_waits,host=%s,db=%s,session_id=%d,sql_opname=%s,
-            session_state=%s,
-            wait_class=%s,
-            event=%s,
-            sql_id=%s
+            tags['wait_class'] = row['WAIT_CLASS'].replace(' ', '_')
+            tags['event']      = row['EVENT'].replace(' ', '_')
 
-            session_id=%s,
-            session_serial=%s,
-            session_type=\"%s\",
-            event=\"%s\",
-            wait_class=\"%s\",
-            wait_time=%d,
-            session_state=\"%s\",
-            time_waited=%d,
-            blocking_session_status=\"%s\",
-            blocking_session=%d,
-            blocking_session_serial=%s
-            %d000000000
-            """ %
+        if (row['SQL_OPNAME']):
+            tags['sql_opname'] = row['SQL_OPNAME'].replace(' ', '_')
+
+        if (row['SQL_ID']):
+            tags['sql_id'] = row['SQL_ID']
+
+    if (row['BLOCKING_SESSION'] > 0):
+        tags['blocking_session'] = row['BLOCKING_SESSION']
+
+
+        print ("oracle_ash_waits,%s %s %d000000000" %
             (
-                oracle_host,
+                ",".join(["%s=%s" % (k, tags[k]) for k in tags]),
+                ",".join(["%s=\"%s\"" % (f.lower(), row[f]) for f in row if row[f] is not None]),
 
-                oracle_service,
-                row['SESSION_ID'],
-                row['SQL_OPNAME'],
-                row['SESSION_STATE'],
-                # InfluxDB does not like spaces in tag names, so lets replace them with _
-                row['WAIT_CLASS'].replace(' ', '_'),
-                row['EVENT'].replace(' ', '_'),
-                row['SQL_ID'],
-
-                row['SESSION_ID'],
-                row['SESSION_SERIAL#'],
-                row['SESSION_TYPE'],
-                row['EVENT'],
-                row['WAIT_CLASS'],
-                row['WAIT_TIME'],
-                row['SESSION_STATE'],
-                row['TIME_WAITED'],
-                row['BLOCKING_SESSION_STATUS'],
-                0,
-                #row['BLOCKING_SESSION'],
-                row['BLOCKING_SESSION_SERIAL#'],
                 int(time.mktime(row['SAMPLE_TIME'].timetuple()))
             ))
-        continue
-        print ("oracle_ash,host=%s,db=%s,session_id=%d,sql_opname=%s,session_state=%s,wait_class=%s,event=%s,sql_id=%s session_id=%s,session_serial=%s," %
-        (
-            oracle_host,
-            oracle_service,
-            row['SESSION_ID'],
-            row['SQL_OPNAME'],
-            row['SESSION_STATE'],
-            row['WAIT_CLASS'].replace(' ', '_'),
-            row['EVENT'],
-            row['SQL_ID'],
-
-            #session_id=%s,session_serial=%s,session_type=\"%s\",event=\"%s\",wait_class=\"%s\",wait_time=%s,session_state=\"%s\",time_waited=%s,
-            #blocking_session_status=\"%s\",blocking_session=%d,blocking_session_serial=%s, %s000000000
-            row['SESSION_ID'],
-            row['SESSION_SERIAL#'],
-            #row['SESSION_TYPE'],
-            #row['EVENT'],
-            #row['WAIT_CLASS'],
-            #row['WAIT_TIME'],
-            #row['SESSION_STATE'],
-            #row['TIME_WAITED'],
-            #row['BLOCKING_SESSION_STATUS'],
-            #row['BLOCKING_SESSION'],
-        #    row['BLOCKING_SESSION_SERIAL#'],
-            #int(time.mktime(row['SAMPLE_TIME'].timetuple()))
-        ))
