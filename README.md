@@ -210,7 +210,7 @@ We are now ready to create our first Graph. Grafana already has a fresh dashboar
 
 
 
-The demo dashboard shows wait events, session status(waiting/running), number of blocking sessions and sessions blocked by other sessions and by which wait event.
+The [demo dashboard](grafana-dashboard-demo.json) shows wait events, session status(waiting/running), number of blocking sessions and sessions blocked by other sessions and by which wait event.
 
 ![Grafana Demo Dashboard](img/grafana_demo_dashboard.png)
 
