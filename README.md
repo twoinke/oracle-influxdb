@@ -15,11 +15,11 @@ If you have an SQL database background, the crosswalk https://docs.influxdata.co
 
 Also, this tutorial will make use of Docker in order to setup the test/demo environment, so make sure you have Docker installed and you have sufficient permissions to create containers.
 
-## Disclaimer
+### Disclaimer
 
 The Oracle Active Session History is licensed as part of the "Oracle Diagnostics Pack". Make sure your Oracle license allows usage of this feature.
 
-## Setting up the test environment
+### Setting up the test environment
 
 Let us begin by going ahead and installing influxdb and grafana. To keep things simple, we just use the official docker images and use the following commands to spin up our test environment.
 ```bash
@@ -197,14 +197,16 @@ time count
 ## Grafana
 Now with the data part done, we will take care of the visualization part. Grafana is available at http://localhost:3000/ and after logging on using the default credentials admin/admin, we need to supply a new password. Now we are ready to go.
 
+### Data source setup
 Next thing we need is to set up a data source in Grafana, like shown.
 
 ![setup grafana data source 1](img/grafana_add_data_source_1.png)
 ![setup grafana data source 2](img/grafana_add_data_source_2.png)
 
-We are ready now to create our first Graph. Grafana already has a fresh dashboard with a new, unconfigured panel. Click on "add Query", and we can enter our query using the query editor, like shown in the screenshot.
+### Show us something!
+We are now ready to create our first Graph. Grafana already has a fresh dashboard with a new, unconfigured panel. Click on "add Query", and we can enter our query using the query editor, like shown in the screenshot.
 
-![Grafana Query erstellen](img/grafana_graph_wait_events.PNG)
+![create grafana query](img/grafana_graph_wait_events.PNG)
 
 
 
