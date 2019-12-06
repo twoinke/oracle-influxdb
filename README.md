@@ -7,7 +7,7 @@ Modern monitoring/visualization solutions like the ELK stack (Elasticsearch, Log
 This tutorial will show how to use the TICK stack, or more precisely its storage component InfluxDB and its data collector Telegraf in conjunction with Grafana, a combination which has recently become popular as the TIG-Stack.
 
 
-## Prerequsites
+## Prerequisites
 
  Covering all aspects of InfluxDB is way outside the scope of this article, we will cover just what we need as we go. If you are totally new to InfluxDB or want to dig deeper, please refer to the very good online documentation https://docs.influxdata.com/influxdb/v1.7/
 You should however have a rough idea of the key concepts https://docs.influxdata.com/influxdb/v1.7/concepts/key_concepts/.
