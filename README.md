@@ -135,6 +135,9 @@ SQL> grant connect to metrics;
 Grant succeeded.
 
 SQL> grant select on v_$active_session_history to metrics;
+
+Grant succeeded.
+
 ```
 
 
