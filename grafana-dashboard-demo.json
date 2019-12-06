@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 237,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -23,14 +23,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "tf-oracle-metrics",
+      "datasource": "InfluxDB",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 6,
         "w": 24,
         "x": 0,
         "y": 0
       },
+      "hiddenSeries": false,
       "id": 2,
       "legend": {
         "alignAsTable": true,
@@ -49,7 +51,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -64,7 +68,7 @@
           "groupBy": [
             {
               "params": [
-                "1m"
+                "$__interval"
               ],
               "type": "time"
             },
@@ -73,15 +77,9 @@
                 "event"
               ],
               "type": "tag"
-            },
-            {
-              "params": [
-                "null"
-              ],
-              "type": "fill"
             }
           ],
-          "measurement": "oracle_ash",
+          "measurement": "oracle_ash_waits",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -100,19 +98,7 @@
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "event",
-              "operator": "<>",
-              "value": "NONE"
-            },
-            {
-              "condition": "AND",
-              "key": "db",
-              "operator": "=",
-              "value": "otsg"
-            }
-          ]
+          "tags": []
         }
       ],
       "thresholds": [],
@@ -161,15 +147,17 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "tf-oracle-metrics",
+      "datasource": "InfluxDB",
       "description": "Number of sessions active or waiting",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 0,
         "y": 6
       },
+      "hiddenSeries": false,
       "id": 4,
       "legend": {
         "avg": false,
@@ -184,7 +172,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -216,7 +206,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "oracle_ash",
+          "measurement": "oracle_ash_waits",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -235,13 +225,7 @@
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "db",
-              "operator": "=",
-              "value": "otsg"
-            }
-          ]
+          "tags": []
         }
       ],
       "thresholds": [],
@@ -290,15 +274,17 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "tf-oracle-metrics",
+      "datasource": "InfluxDB",
       "description": "Sessions blocked by other sessions",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 12,
         "x": 12,
         "y": 6
       },
+      "hiddenSeries": false,
       "id": 8,
       "legend": {
         "avg": false,
@@ -313,7 +299,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -342,7 +330,7 @@
           "measurement": "oracle_ash",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT count(\"session_id\") as \"sessions blocked\" FROM \"oracle_ash\" WHERE ( \"db\" = 'otsg') AND blocking_session <> 0 AND $timeFilter GROUP BY  session_id,time(1m) fill(null)",
+          "query": "SELECT count(\"session_id\") as \"sessions blocked\" FROM \"oracle_ash_waits\" WHERE blocking_session <> 0 AND $timeFilter GROUP BY  session_id,time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -415,14 +403,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "tf-oracle-metrics",
+      "datasource": "InfluxDB",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 12,
         "x": 0,
         "y": 11
       },
+      "hiddenSeries": false,
       "id": 6,
       "legend": {
         "avg": false,
@@ -437,7 +427,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -469,7 +461,7 @@
               "type": "fill"
             }
           ],
-          "measurement": "oracle_ash",
+          "measurement": "oracle_ash_waits",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -488,13 +480,7 @@
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "db",
-              "operator": "=",
-              "value": "otsg"
-            }
-          ]
+          "tags": []
         }
       ],
       "thresholds": [],
@@ -540,7 +526,7 @@
     },
     {
       "columns": [],
-      "datasource": "tf-oracle-metrics",
+      "datasource": "InfluxDB",
       "fontSize": "100%",
       "gridPos": {
         "h": 7,
@@ -599,7 +585,7 @@
           "measurement": "oracle_ash",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT  \"sql_id\",\"blocking_session\", \"session_id\",\"sql_opname\",\"event\",\"program\" FROM \"oracle_ash\" WHERE (\"db\" = 'otsg') AND $timeFilter and blocking_session  <> 0",
+          "query": "SELECT  \"sql_id\",\"blocking_session\", \"session_id\",\"sql_opname\",\"event\",\"program\" FROM \"oracle_ash_waits\" WHERE  $timeFilter and blocking_session  <> 0",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "table",
@@ -633,14 +619,14 @@
       "type": "table"
     }
   ],
-  "schemaVersion": 18,
+  "schemaVersion": 21,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
